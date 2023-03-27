@@ -140,9 +140,7 @@ int main( void )
     //            GENERATE TEXTURE
     // ========================================
     
-    std::string currentPath = getCurrentWorking Directory();
-    
-    unsigned int texture1 = loadTextureFromFile((currentPath+"/assets/textures/grass_texture.png").c_str());
+    unsigned int texture1  = loadTextureFromFile("../assets/textures/grass_texture.png");
     glUseProgram(shaderID);
     glUniform1i(glGetUniformLocation(shaderID, "u_textgrass"), 0);
 
@@ -188,6 +186,7 @@ int main( void )
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteProgram(shaderID);
+    glDeleteTextures(1, &texture1);
     glfwTerminate();
     return 0;
 }
