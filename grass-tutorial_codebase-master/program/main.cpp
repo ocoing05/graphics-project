@@ -134,7 +134,17 @@ int main( void )
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0); 
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    
+    // ========================================
+    //            GENERATE TEXTURE
+    // ========================================
+    
+    std::string currentPath = getCurrentWorking Directory();
+    
+    unsigned int texture1 = loadTextureFromFile((currentPath+"/assets/textures/grass_texture.png").c_str());
+    glUseProgram(shaderID);
+    glUniform1i(glGetUniformLocation(shaderID, "u_textgrass"), 0);
 
     // ========================================
     //            RENDER LOOP
@@ -149,6 +159,10 @@ int main( void )
 
         // reset color
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
+        // bind textures
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture1);
         
         // update view
         glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
@@ -263,6 +277,7 @@ unsigned int loadTextureFromFile(const char *path)
 {
     //std::string filename = std::string(path);
     std::string filename = std::string(path);//directory + '/' + filename;
+    
     
     unsigned int textureID;
     glGenTextures(1, &textureID);
