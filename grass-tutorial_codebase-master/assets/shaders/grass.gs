@@ -82,9 +82,9 @@ void createGrass(int numQuads)
     }
     
     // only the first quad created appears
-    createQuad(gl_in[0].gl_Position.xyz, model0);
-    createQuad(gl_in[0].gl_Position.xyz, model45);
-    createQuad(gl_in[0].gl_Position.xyz, modelm45);
+//    createQuad(gl_in[0].gl_Position.xyz, model0);
+//    createQuad(gl_in[0].gl_Position.xyz, model45);
+//    createQuad(gl_in[0].gl_Position.xyz, modelm45);
 }
 
 void main()
