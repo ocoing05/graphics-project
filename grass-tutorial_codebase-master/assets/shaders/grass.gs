@@ -17,6 +17,13 @@ out GS_OUT {
 uniform mat4 u_projection;
 uniform mat4 u_view;
 
+const float PI = 3.141592653589793;
+float grass_size;
+const float c_min_size = 0.4f;
+
+mat4 rotationY(in float angle);
+float random (vec2 st);
+
 void createQuad(vec3 basePos, mat4 crossModel)
 {
     vec4 newBasePos = vec4(basePos.x, basePos.y, basePos.z, 1.0);
@@ -32,23 +39,14 @@ void createQuad(vec3 basePos, mat4 crossModel)
     textCoords[2] = vec2(0.0,1.0);
     textCoords[3] = vec2(1.0,1.0);
     
+    mat4 modelRandY = rotationY(random(newBasePos.zx)*PI);
+    
     for (int i=0; i<4; i++) {
-        gl_Position = u_projection * u_view * (newBasePos + crossModel * vertexPosition[i]);
+        gl_Position = u_projection * u_view * (newBasePos + modelRandY * crossModel * grass_size * vertexPosition[i]);
         gs_out.textCoord = textCoords[i];
         EmitVertex();
     }
     EndPrimitive();
-}
-
-mat4 rotationY(float rad)
-{
-    mat4 rotMatrix;
-    rotMatrix[0] = vec4(cos(rad), 0, -sin(rad), 0); // first col
-    rotMatrix[1] = vec4(0,1,0,0);
-    rotMatrix[2] = vec4(sin(rad), 0, cos(rad), 0);
-    rotMatrix[3] = vec4(0,0,0,1);
-    
-    return rotMatrix;
 }
 
 void createGrass()
@@ -65,5 +63,21 @@ void createGrass()
 
 void main()
 {
+    grass_size = random(gl_in[0].gl_Position.xz) * (1.0f - c_min_size) + c_min_size;
     createGrass();
 } 
+
+mat4 rotationY(float rad)
+{
+    mat4 rotMatrix;
+    rotMatrix[0] = vec4(cos(rad), 0, -sin(rad), 0); // first col
+    rotMatrix[1] = vec4(0,1,0,0);
+    rotMatrix[2] = vec4(sin(rad), 0, cos(rad), 0);
+    rotMatrix[3] = vec4(0,0,0,1);
+    
+    return rotMatrix;
+}
+
+float random (vec2 st) {
+    return fract(sin(dot(st.xy,vec2(12.9898,78.233)))*43758.5453123);
+}
