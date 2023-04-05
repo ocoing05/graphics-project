@@ -58,6 +58,12 @@ add_executable(program
     common/stb_image.hpp
 )
 
+set(extra_files
+  Debug/grass.vs
+  Debug/grass.gs
+  Debug/grass.fs
+)
+
 target_link_libraries(program
 	${ALL_LIBS}
 )
