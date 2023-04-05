@@ -33,6 +33,14 @@ include_directories(
 	.
 )
 
+set(extra_files
+  resources/grass.vs
+  resources/grass.gs
+  resources/grass.fs
+)
+
+set_source_files_properties(${extra_files} PROPERTIES HEADER_FILE_ONLY TRUE)
+
 set(ALL_LIBS
 	${OPENGL_LIBRARY}
 	glfw
@@ -48,7 +56,7 @@ add_definitions(
 )
 
 # files
-add_executable(program 
+add_executable(${PROJECT_NAME} 
 	program/main.cpp
 
 	common/Shader.cpp
@@ -56,14 +64,17 @@ add_executable(program
     
     common/stb_image.cpp
     common/stb_image.hpp
+	${extra_files}
 )
 
-set(extra_files
-  Debug/grass.vs
-  Debug/grass.gs
-  Debug/grass.fs
-)
+#copy resource files to build folder so that the executable can find them in the working directory
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory
+                       ${CMAKE_SOURCE_DIR}/resources $<TARGET_FILE_DIR:${PROJECT_NAME}>
+					   )
 
-target_link_libraries(program
+
+
+target_link_libraries(${PROJECT_NAME}
 	${ALL_LIBS}
 )
