@@ -144,7 +144,9 @@ int main( void )
     glUseProgram(shaderID);
     glUniform1i(glGetUniformLocation(shaderID, "u_textgrass"), 0);
     
-    unsigned int texture2 = loadTextureFromFile("flomap.png");
+    unsigned int texture2 = loadTextureFromFile("flowmap.png");
+    glUseProgram(shaderID);
+    glUniform1i(glGetUniformLocation(shaderID, "u_wind"), 1);
 
     // ========================================
     //            RENDER LOOP
@@ -167,6 +169,7 @@ int main( void )
         // update view
         glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
         glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_view"), 1, GL_FALSE, &view[0][0]);
+        glUniform1f(glGetUniformLocation(shaderID, "u_time"), glfwGetTime()); 
 
         // draw
         glUseProgram(shaderID);
