@@ -165,10 +165,13 @@ int main( void )
         // bind textures
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture1);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, texture2);
         
         // update view
         glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
         glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_view"), 1, GL_FALSE, &view[0][0]);
+        glUniform3fv(glGetUniformLocation(shaderID, "u_cameraPosition"), 1, &cameraPos[0]);
         glUniform1f(glGetUniformLocation(shaderID, "u_time"), glfwGetTime()); 
 
         // draw
@@ -192,6 +195,7 @@ int main( void )
     glDeleteBuffers(1, &VBO);
     glDeleteProgram(shaderID);
     glDeleteTextures(1, &texture1);
+    glDeleteTextures(1, &texture2);
     glfwTerminate();
     return 0;
 }
