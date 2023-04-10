@@ -18,6 +18,8 @@ out GS_OUT {
 uniform mat4 u_projection;
 uniform mat4 u_view;
 uniform vec3 u_cameraPosition;
+uniform sampler2D u_wind;
+uniform float u_time;
 
 const float PI = 3.141592653589793;
 float grass_size;
@@ -27,6 +29,8 @@ const float LOD2 = 10.0f;
 const float LOD3 = 20.0f;
 
 mat4 rotationY(in float angle);
+mat4 rotationX(in float angle);
+mat4 rotationZ(in float angle);
 float random (vec2 st);
 float fbm ( in vec2 _st);
 
@@ -45,10 +49,23 @@ void createQuad(vec3 basePos, mat4 crossModel)
     textCoords[2] = vec2(0.0,1.0);
     textCoords[3] = vec2(1.0,1.0);
     
+    // wind
+    vec2 windDirection = vec2(1.0, 1.0);
+    float windStrength = 0.15f;
+    vec2 uv = basePos.xz/10.0 + windDirection * windStrength * u_time;
+    uv.x = mod(uv.x, 1.0);
+    uv.y = mod(uv.y,1.0);
+    vec4 wind = texture(u_wind, uv);
+    mat4 modelWind = (rotationX(wind.x*PI*0.75f - PI*0.25f) * rotationZ(wind.y*PI*0.75f - PI*0.25f));
+    mat4 modelWindApply = mat4(1);
+    
     mat4 modelRandY = rotationY(random(newBasePos.zx)*PI);
     
     for (int i=0; i<4; i++) {
-        gl_Position = u_projection * u_view * (newBasePos + modelRandY * crossModel * (grass_size * vertexPosition[i]));
+        if (i == 2) { // apply wind to only top corners of quads
+            modelWindApply = modelWind;
+        }
+        gl_Position = u_projection * u_view * (newBasePos + modelWindApply * modelRandY * crossModel * (grass_size * vertexPosition[i]));
         gs_out.textCoord = textCoords[i];
         gs_out.colorVariation = fbm(gl_in[0].gl_Position.xz);
         EmitVertex();
@@ -114,6 +131,28 @@ mat4 rotationY(float rad)
     rotMatrix[0] = vec4(cos(rad), 0, -sin(rad), 0); // first col
     rotMatrix[1] = vec4(0,1,0,0);
     rotMatrix[2] = vec4(sin(rad), 0, cos(rad), 0);
+    rotMatrix[3] = vec4(0,0,0,1);
+    
+    return rotMatrix;
+}
+
+mat4 rotationX(float rad)
+{
+    mat4 rotMatrix;
+    rotMatrix[0] = vec4(1,0,0,0); // first col
+    rotMatrix[1] = vec4(0,cos(rad),sin(rad),0);
+    rotMatrix[2] = vec4(0, -sin(rad), cos(rad), 0);
+    rotMatrix[3] = vec4(0,0,0,1);
+    
+    return rotMatrix;
+}
+
+mat4 rotationZ(float rad)
+{
+    mat4 rotMatrix;
+    rotMatrix[0] = vec4(cos(rad),sin(rad),0,0); // first col
+    rotMatrix[1] = vec4(-sin(rad),cos(rad),0,0);
+    rotMatrix[2] = vec4(0,0,1,0);
     rotMatrix[3] = vec4(0,0,0,1);
     
     return rotMatrix;

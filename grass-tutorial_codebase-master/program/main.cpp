@@ -143,6 +143,8 @@ int main( void )
     unsigned int texture1  = loadTextureFromFile("grass_texture.png");
     glUseProgram(shaderID);
     glUniform1i(glGetUniformLocation(shaderID, "u_textgrass"), 0);
+    
+    unsigned int texture2 = loadTextureFromFile("flomap.png");
 
     // ========================================
     //            RENDER LOOP
