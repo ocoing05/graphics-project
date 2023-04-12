@@ -23,7 +23,7 @@ uniform float u_time;
 
 const float PI = 3.141592653589793;
 float grass_size;
-const float c_min_size = 0.8f;
+const float c_min_size = 1.8f;
 const float LOD1 = 5.0f;
 const float LOD2 = 10.0f;
 const float LOD3 = 20.0f;
@@ -99,9 +99,9 @@ void createGrass(int numQuads)
     }
     
     // only the first quad created appears
-    createQuad(gl_in[0].gl_Position.xyz, model0);
-    createQuad(gl_in[0].gl_Position.xyz, model45);
-    createQuad(gl_in[0].gl_Position.xyz, modelm45);
+    // createQuad(gl_in[0].gl_Position.xyz, model0);
+    // createQuad(gl_in[0].gl_Position.xyz, model45);
+    // createQuad(gl_in[0].gl_Position.xyz, modelm45);
 }
 
 void main()
