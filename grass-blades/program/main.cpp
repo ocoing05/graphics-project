@@ -118,8 +118,8 @@ int main( void )
     //            CREATE POSITIONS
     // ========================================
     std::vector<glm::vec3> positions;
-    for(float x = -10.0f; x < 10.0f; x+=0.1f)
-        for(float z = -10.0f; z < 10.0f; z+=0.1f)
+    for(float x = -10.0f; x < 10.0f; x+=0.2f)
+        for(float z = -10.0f; z < 10.0f; z+=0.2f)
         {
             int randNumberX = rand() % 10 + 1;
             int randNumberZ = rand() % 10 + 1;
@@ -136,7 +136,15 @@ int main( void )
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0); 
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    
+    // ========================================
+    //            GENERATE TEXTURE
+    // ========================================
+    
+    unsigned int texture1  = loadTextureFromFile("Wind.png");
+    glUseProgram(shaderID);
+    glUniform1i(glGetUniformLocation(shaderID, "u_wind"), 0);
 
     // ========================================
     //            RENDER LOOP
@@ -152,9 +160,14 @@ int main( void )
         // reset color
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
+        // bind textures
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture1);
+        
         // update view
         glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
         glUniformMatrix4fv(glGetUniformLocation(shaderID, "u_view"), 1, GL_FALSE, &view[0][0]);
+        glUniform1f(glGetUniformLocation(shaderID, "u_time"), glfwGetTime());
 
         // draw
         glUseProgram(shaderID);
@@ -176,6 +189,7 @@ int main( void )
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteProgram(shaderID);
+    glDeleteTextures(1, &texture1);
     glfwTerminate();
     return 0;
 }

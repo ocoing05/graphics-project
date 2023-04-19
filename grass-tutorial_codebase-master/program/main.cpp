@@ -201,7 +201,8 @@ int main( void )
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteProgram(shaderID);
-    glDeleteTextures(1, &texture1);
+    
+    
     glDeleteTextures(1, &texture2);
     glfwTerminate();
     return 0;
