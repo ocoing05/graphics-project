@@ -64,6 +64,13 @@ mat4 rotationZ(float rad)
     return rotMatrix;
 }
 
+void generateGrassVertex(vec4 pos, vec2 uv, mat4 transformMatrix)
+{
+    gl_Position = u_projection * u_view * (gl_in[0].gl_Position + transformMatrix * pos);
+    gs_out.textCoord = uv;
+    EmitVertex();
+}
+
 void main()
 {
     grassHeight = random(gl_in[0].gl_Position.xz) * (maxHeight - minHeight) + minHeight;
@@ -81,17 +88,15 @@ void main()
     vec4 wind = texture(u_wind, uv);
     mat4 modelWind = (rotationX(wind.x*PI*0.75f - PI*0.25f) * rotationZ(wind.y*PI*0.75f - PI*0.25f));
     
-    gl_Position = u_projection * u_view * (gl_in[0].gl_Position + modelRandY * modelRandX * vec4(grassWidth/2, 0, 0, 1));
-    gs_out.textCoord = vec2(0,1);
-    EmitVertex();
+    //gl_Position = u_projection * u_view * (gl_in[0].gl_Position + modelRandY * modelRandX * vec4(grassWidth/2, 0, 0, 1));
+    //gs_out.textCoord = vec2(0,1);
+    //EmitVertex();
     
-    gl_Position = u_projection * u_view * (gl_in[0].gl_Position + modelRandY * modelRandX * vec4(-grassWidth/2, 0, 0, 1));
-    gs_out.textCoord = vec2(1,1);
-    EmitVertex();
+    generateGrassVertex(vec4(grassWidth/2, 0, 0, 1), vec2(0,1), modelRandY * modelRandX);
     
-    gl_Position = u_projection * u_view * (gl_in[0].gl_Position + modelWind * modelRandY * modelRandX * vec4(0, grassHeight, 0, 1));
-    gs_out.textCoord = vec2(0.5,0);
-    EmitVertex();
+    generateGrassVertex(vec4(-grassWidth/2, 0, 0, 1), vec2(1,1), modelRandY * modelRandX);
+    
+    generateGrassVertex(vec4(0, grassHeight, 0, 1), vec2(0.5,0), modelWind * modelRandY * modelRandX);
 
     EndPrimitive();
 } 
