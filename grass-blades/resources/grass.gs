@@ -16,6 +16,13 @@ out GS_OUT {
 uniform mat4 u_projection;
 uniform mat4 u_view;
 
+float grassHeight;
+float grassWidth;
+const float minHeight = 0.5f;
+const float maxHeight = 1.0f;
+const float minWidth = 0.05f;
+const float maxWidth = 0.1f;
+
 float PI = 3.141592653589793;
 
 float random (vec2 st) {
@@ -46,18 +53,21 @@ mat4 rotationX(float rad)
 
 void main()
 {
-    mat4 modelRandY = rotationY(random(gl_in[0].gl_Position.zx)*PI);
+    mat4 modelRandY = rotationY(random(gl_in[0].gl_Position.zx)*2*PI);
     mat4 modelRandX = rotationX(random(gl_in[0].gl_Position.xz)*PI*0.5);
     
-    gl_Position = u_projection * u_view * (gl_in[0].gl_Position + vec4(0.5, 0, 0, 1) * modelRandY * modelRandX);
+    grassHeight = random(gl_in[0].gl_Position.xz) * (maxHeight - minHeight) + minHeight;
+    grassWidth = random(gl_in[0].gl_Position.xz) * (maxWidth - minWidth) + minWidth;
+    
+    gl_Position = u_projection * u_view * (gl_in[0].gl_Position + vec4(grassWidth/2, 0, 0, 1) * modelRandY * modelRandX);
     gs_out.textCoord = vec2(0,1);
     EmitVertex();
     
-    gl_Position = u_projection * u_view * (gl_in[0].gl_Position + vec4(-0.5, 0, 0, 1) * modelRandY * modelRandX);
+    gl_Position = u_projection * u_view * (gl_in[0].gl_Position + vec4(-grassWidth/2, 0, 0, 1) * modelRandY * modelRandX);
     gs_out.textCoord = vec2(1,1);
     EmitVertex();
     
-    gl_Position = u_projection * u_view * (gl_in[0].gl_Position + vec4(0, 1, 0, 1) * modelRandY * modelRandX);
+    gl_Position = u_projection * u_view * (gl_in[0].gl_Position + vec4(0, grassHeight, 0, 1) * modelRandY * modelRandX);
     gs_out.textCoord = vec2(0.5,0);
     EmitVertex();
 
