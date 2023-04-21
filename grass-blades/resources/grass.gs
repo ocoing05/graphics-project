@@ -24,6 +24,7 @@ const float minHeight = 0.5f;
 const float maxHeight = 1.0f;
 const float minWidth = 0.05f;
 const float maxWidth = 0.1f;
+const float BLADE_SEGMENTS = 3.0f;
 
 float PI = 3.141592653589793;
 
@@ -68,7 +69,6 @@ void generateGrassVertex(vec4 pos, vec2 uv, mat4 transformMatrix)
 {
     gl_Position = u_projection * u_view * (gl_in[0].gl_Position + transformMatrix * pos);
     gs_out.textCoord = uv;
-    EmitVertex();
 }
 
 void main()
@@ -88,11 +88,25 @@ void main()
     vec4 wind = texture(u_wind, uv);
     mat4 modelWind = (rotationX(wind.x*PI*0.75f - PI*0.25f) * rotationZ(wind.y*PI*0.75f - PI*0.25f));
     
-    generateGrassVertex(vec4(grassWidth/2, 0, 0, 1), vec2(0,1), modelRandY * modelRandX);
-    
-    generateGrassVertex(vec4(-grassWidth/2, 0, 0, 1), vec2(1,1), modelRandY * modelRandX);
+    for (int i = 0; i < BLADE_SEGMENTS; i++)
+    {
+        float t = i / BLADE_SEGMENTS;
+        float segmentHeight = grassHeight * t;
+        float segmentWidth = grassWidth * (1 - t);
+        mat4 transform;
+        if (i == 0) {
+            transform = modelRandY * modelRandX;
+        } else {
+            transform = modelWind * modelRandY * modelRandX;
+        }
+        generateGrassVertex(vec4(segmentWidth, segmentHeight, 0, 1), vec2(0,abs(t-1)), transform);
+        EmitVertex();
+        generateGrassVertex(vec4(-segmentWidth, segmentHeight, 0, 1), vec2(1,abs(t-1)), transform);
+        EmitVertex();
+    }
     
     generateGrassVertex(vec4(0, grassHeight, 0, 1), vec2(0.5,0), modelWind * modelRandY * modelRandX);
+    EmitVertex();
 
     EndPrimitive();
 } 
