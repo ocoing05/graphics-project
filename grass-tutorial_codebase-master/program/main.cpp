@@ -123,8 +123,8 @@ int main( void )
 //        {
 //            positions.push_back(glm::vec3(x, 0, z));
 //        }
-    for(float x = -50.0f; x < 50.0f; x+=0.1f)
-        for(float z = -50.0f; z < 50.0f; z+=0.1f)
+    for(float x = -50.0f; x < 50.0f; x+=0.2f)
+        for(float z = -50.0f; z < 50.0f; z+=0.2f)
         {
             int randNumberX = rand() % 10 + 1;
             int randNumberZ = rand() % 10 + 1;

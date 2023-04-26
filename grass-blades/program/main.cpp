@@ -118,8 +118,8 @@ int main( void )
     //            CREATE POSITIONS
     // ========================================
     std::vector<glm::vec3> positions;
-    for(float x = -10.0f; x < 10.0f; x+=0.2f)
-        for(float z = -10.0f; z < 10.0f; z+=0.2f)
+    for(float x = -10.0f; x < 100.0f; x+=0.2f)
+        for(float z = -10.0f; z < 100.0f; z+=0.2f)
         {
             int randNumberX = rand() % 10 + 1;
             int randNumberZ = rand() % 10 + 1;
