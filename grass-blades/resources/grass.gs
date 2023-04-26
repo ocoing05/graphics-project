@@ -24,6 +24,8 @@ const float minHeight = 0.5f;
 const float maxHeight = 1.0f;
 const float minWidth = 0.05f;
 const float maxWidth = 0.1f;
+const float bladeForward = 0.38f;
+const float bladeCurve = 2.0f;
 const float BLADE_SEGMENTS = 3.0f;
 
 float PI = 3.141592653589793;
@@ -76,6 +78,8 @@ void main()
     grassHeight = random(gl_in[0].gl_Position.xz) * (maxHeight - minHeight) + minHeight;
     grassWidth = random(gl_in[0].gl_Position.xz) * (maxWidth - minWidth) + minWidth;
     
+    float forward = random(gl_in[0].gl_Position.yz) * bladeForward;
+    
     mat4 modelRandY = rotationY(random(gl_in[0].gl_Position.zx)*2*PI);
     mat4 modelRandX = rotationX(random(gl_in[0].gl_Position.xz)*PI*0.2);
     
@@ -93,19 +97,20 @@ void main()
         float t = i / BLADE_SEGMENTS;
         float segmentHeight = grassHeight * t;
         float segmentWidth = grassWidth * (1 - t);
+        float segmentForward = pow(t, bladeCurve) * forward;
         mat4 transform;
         if (i == 0) {
             transform = modelRandY * modelRandX;
         } else {
             transform = modelWind * modelRandY * modelRandX;
         }
-        generateGrassVertex(vec4(segmentWidth, segmentHeight, 0, 1), vec2(0,abs(t-1)), transform);
+        generateGrassVertex(vec4(segmentWidth, segmentHeight, segmentForward, 1), vec2(0,abs(t-1)), transform);
         EmitVertex();
-        generateGrassVertex(vec4(-segmentWidth, segmentHeight, 0, 1), vec2(1,abs(t-1)), transform);
+        generateGrassVertex(vec4(-segmentWidth, segmentHeight, segmentForward, 1), vec2(1,abs(t-1)), transform);
         EmitVertex();
     }
     
-    generateGrassVertex(vec4(0, grassHeight, 0, 1), vec2(0.5,0), modelWind * modelRandY * modelRandX);
+    generateGrassVertex(vec4(0, grassHeight, forward, 1), vec2(0.5,0), modelWind * modelRandY * modelRandX);
     EmitVertex();
 
     EndPrimitive();

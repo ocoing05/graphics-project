@@ -15,9 +15,9 @@ float random (vec2 st) {
 }
 
 void main() {
-	gl_Position = vec4(aPos, 1.0);
-    // float rand = random(aPos.xz);
-    // gl_Position = vec4(aPos.x + rand, aPos.y, aPos.z + rand, 1.0);
+	// gl_Position = vec4(aPos, 1.0);
+    float rand = random(aPos.xz);
+    gl_Position = vec4(aPos.x + rand, aPos.y, aPos.z + rand, 1.0);
 }
 
 
