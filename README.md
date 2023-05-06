@@ -2,7 +2,7 @@
 
 ## Ingrid O'Connor & Quentin Harrington
 
-For both methods, nearly all of the code we wrote is found in the grass.gs file, though there are also some smaller changes in grass.vs, main.cpp, and grass.fs.
+For both methods, nearly all of the code we wrote is found in the grass.gs file, though there are also some smaller changes in grass.vs, main.cpp, and grass.fs. This starter code provided us with starting points for all of these files as well as any textures we used: https://github.com/Vulpinii/grass-tutorial_codebase.
 
 ### Billboarding Method
 The code for our billboarding method of rendering grass can be found in the folder titled "grass-tutorial_codebase-master".
